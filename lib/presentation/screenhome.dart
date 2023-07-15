@@ -1,8 +1,7 @@
-import 'package:blooddonorapp/presentation/screenadd.dart';
-import 'package:blooddonorapp/presentation/screenupdate.dart';
+import 'package:blooddonorapp/function.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 
 class HomeScreen extends StatelessWidget {
    HomeScreen({super.key});
@@ -13,10 +12,11 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(
-        title: Text('List'),
+        title: Text('List of Donors'),
+        centerTitle: true,
       ),
       body: StreamBuilder(
-        stream: donor.snapshots(),
+        stream: donor.orderBy('name').snapshots(),
         builder: (context, AsyncSnapshot snapshot) {
           if(snapshot.hasData){
             return ListView.builder(
@@ -41,22 +41,22 @@ class HomeScreen extends StatelessWidget {
                     title: Text(data['name']),
                     leading:CircleAvatar(child: Text(data['group']),) ,
                     subtitle: Text(data['mobile'].toString()),
-                    trailing: PopupMenuButton(itemBuilder: (context) {
-                      return [
-                        PopupMenuItem(
-                          child: Text('Edit'),
-                          onTap: () {
-                            print('hai arun');
-                            Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => UpdateScreen(),));
-                          },),
-                        PopupMenuItem(child: Text('Delete'),
-                        onTap: () {
-                            print('hai arun');
-                            Navigator.of(context).push(MaterialPageRoute(builder: (ctx) => AddScreen(),));
-                          },),
-                      ];
-                    },)
-                  ),
+                    trailing: Wrap(
+                      children: [
+                        IconButton(onPressed: () {
+                          Navigator.of(context).pushNamed('/update',arguments:{
+                            'name':data['name'],
+                            'mobile':data['mobile'],
+                            'group':data['group'],
+                            'id':data.id
+                          });
+                        }, icon: Icon(Icons.edit)),
+                        IconButton(onPressed: () {
+                          deletedata(data.id);
+                        }, icon: Icon(Icons.delete))
+                      ],
+                    )
+                  )
                 ),
               );
             },);

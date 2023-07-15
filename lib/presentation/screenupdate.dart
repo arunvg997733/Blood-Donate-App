@@ -1,4 +1,5 @@
 import 'package:blooddonorapp/core/constant.dart';
+import 'package:blooddonorapp/function.dart';
 import 'package:flutter/material.dart';
 
 class UpdateScreen extends StatelessWidget {
@@ -12,9 +13,14 @@ class UpdateScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final passdata = ModalRoute.of(context)!.settings.arguments as Map;
+    namectr.text = passdata['name'];
+    mobilectr.text = passdata['mobile'];
+    selectedbloodgroup = passdata['group'];
+
     return  Scaffold(
       appBar: AppBar(
-        title: Text("Add Donor"),
+        title: Text("Update Donor"),
         centerTitle: true,
       ),
       body: Padding(
@@ -41,6 +47,7 @@ class UpdateScreen extends StatelessWidget {
             ),
             kheight,
             DropdownButtonFormField(
+              value: selectedbloodgroup,
               decoration: InputDecoration(
                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(15))
               ),
@@ -54,9 +61,10 @@ class UpdateScreen extends StatelessWidget {
               kheight,
 
               ElevatedButton(onPressed: () {
-                
+                updatedonor(passdata['id'], namectr.text, mobilectr.text, selectedbloodgroup!
+                );
                 Navigator.of(context).pushNamed('/');
-              }, child: Text('Submit'))
+              }, child: Text('Update'))
           ],
         ),
       ),
